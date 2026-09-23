@@ -64,7 +64,7 @@ A lightweight, client-side expense tracker built with pure HTML, CSS, and Vanill
 
 This is a fully static app — no build step or install needed.
 
-### Option 1: Open directly
+### Open directly
 Double-click `index.html` to open in your browser.
 
 > **Note:** Some browsers block CDN scripts on `file://` URLs. If the chart doesn't appear.
