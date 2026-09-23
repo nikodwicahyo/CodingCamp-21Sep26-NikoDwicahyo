@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Expense & Budget Visualizer — catat dan pantau pengeluaran harian Anda dengan mudah." />
+    <title>Expense & Budget Visualizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <!-- Lucide Icons via CDN -->
+    <script src="https://unpkg.com/lucide@0.447.0/dist/umd/lucide.min.js" defer></script>
+    <!-- Chart.js v4 via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" defer></script>
+    <script src="js/main.js" defer></script>
+  </head>
+  <body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header" role="banner">
+      <div class="header-inner">
+        <div class="header-brand">
+          <span class="header-icon" aria-hidden="true">
+            <i data-lucide="wallet" class="icon icon-brand"></i>
+          </span>
+          <h1 class="header-title">BudgetViz</h1>
+        </div>
+        <button
+          id="theme-toggle"
+          class="btn-icon"
+          aria-label="Aktifkan mode gelap"
+          title="Toggle tema"
+        >
+          <span id="theme-icon" aria-hidden="true">
+            <i data-lucide="moon" class="icon icon-theme"></i>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="app-main" id="main-content">
+
+      <!-- Balance Card -->
+      <section class="card balance-card" aria-labelledby="balance-heading">
+        <p class="balance-label" id="balance-heading">Total Pengeluaran</p>
+        <p
+          class="balance-amount"
+          id="total-balance"
+          aria-live="polite"
+          aria-atomic="true"
+        >Rp 0</p>
+        <p class="balance-sub" id="balance-count" aria-live="polite">0 transaksi</p>
+      </section>
+
+      <!-- ===== LAYOUT GRID ===== -->
+      <div class="content-grid">
+
+        <!-- TOP ROW LEFT: Add Transaction Form -->
+        <section class="card form-card" aria-labelledby="form-heading">
+          <h2 class="section-title" id="form-heading">Tambah Transaksi</h2>
+          <form id="transaction-form" novalidate aria-label="Form tambah transaksi">
+
+            <!-- Item Name -->
+            <div class="form-group">
+              <label class="form-label" for="item-name">Nama Item</label>
+              <input
+                type="text"
+                id="item-name"
+                name="item-name"
+                class="form-input"
+                placeholder="cth. Kopi Susu"
+                maxlength="60"
+                autocomplete="off"
+                aria-required="true"
+                aria-describedby="item-name-error"
+              />
+              <span class="form-error" id="item-name-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Amount -->
+            <div class="form-group">
+              <label class="form-label" for="item-amount">Jumlah (Rp)</label>
+              <input
+                type="number"
+                id="item-amount"
+                name="item-amount"
+                class="form-input"
+                placeholder="cth. 25000"
+                min="1"
+                step="any"
+                autocomplete="off"
+                aria-required="true"
+                aria-describedby="item-amount-error"
+              />
+              <span class="form-error" id="item-amount-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+              <label class="form-label" for="item-category">Kategori</label>
+              <div class="category-row">
+                <select
+                  id="item-category"
+                  name="item-category"
+                  class="form-input form-select"
+                  aria-required="true"
+                  aria-describedby="item-category-error"
+                >
+                  <!-- Populated by JS -->
+                </select>
+                <button
+                  type="button"
+                  id="add-category-btn"
+                  class="btn-add-cat"
+                  aria-label="Tambah kategori baru"
+                  title="Tambah kategori baru"
+                >+ Baru</button>
+              </div>
+              <span class="form-error" id="item-category-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submit-btn">
+              <i data-lucide="plus-circle" class="icon" aria-hidden="true"></i>
+              Tambah Transaksi
+            </button>
+          </form>
+        </section>
+
+        <!-- TOP ROW RIGHT: Chart -->
+        <section class="card chart-card" aria-labelledby="chart-heading">
+          <h2 class="section-title" id="chart-heading">Pengeluaran per Kategori</h2>
+          <div class="chart-wrapper" role="img" aria-label="Pie chart pengeluaran per kategori">
+            <canvas id="expense-chart" aria-hidden="true"></canvas>
+          </div>
+        </section>
+
+        <!-- BOTTOM ROW: Transaction List (full width) -->
+        <section class="card list-card" aria-labelledby="list-heading">
+          <div class="list-header">
+            <h2 class="section-title" id="list-heading">Riwayat Transaksi</h2>
+            <!-- Sort Controls -->
+            <div class="sort-group">
+              <label class="sr-only" for="sort-select">Urutkan</label>
+              <select id="sort-select" class="sort-select" aria-label="Urutkan transaksi">
+                <option value="default">Default</option>
+                <option value="amount-desc">Nominal ↑ Terbesar</option>
+                <option value="amount-asc">Nominal ↓ Terkecil</option>
+                <option value="category">Kategori A–Z</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Transaction list items rendered here by JS -->
+          <ul
+            id="transaction-list"
+            class="transaction-list"
+            role="list"
+            aria-label="Daftar transaksi"
+            aria-live="polite"
+            aria-relevant="additions removals"
+          >
+            <!-- Populated by JS -->
+          </ul>
+        </section>
+
+      </div><!-- /content-grid -->
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="app-footer" role="contentinfo">
+      <p>&copy; 2026 Niko Dwicahyo Widiyanto.</p>
+    </footer>
+
+    <!-- ===== CUSTOM CATEGORY MODAL ===== -->
+    <div
+      id="category-modal"
+      class="modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+      hidden
+    >
+      <div class="modal-box">
+        <h3 class="modal-title" id="modal-title">Tambah Kategori Baru</h3>
+        <div class="form-group">
+          <label class="form-label" for="new-category-input">Nama Kategori</label>
+          <input
+            type="text"
+            id="new-category-input"
+            class="form-input"
+            placeholder="cth. Belanja, Kesehatan…"
+            maxlength="20"
+            autocomplete="off"
+            aria-describedby="modal-error"
+          />
+          <span class="form-error" id="modal-error" role="alert" aria-live="polite"></span>
+        </div>
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel" class="btn-secondary">Batal</button>
+          <button type="button" id="modal-confirm" class="btn-submit">Tambah</button>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
