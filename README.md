@@ -1,8 +1,8 @@
-# 💰 BudgetViz - Expense & Budget Visualizer
+# 💰 BudgetViz — Expense & Budget Visualizer
 
 A lightweight, client-side expense tracker built with pure HTML, CSS, and Vanilla JavaScript. No backend, no framework, no account required — just open and start tracking.
 
-Demo: https://github.com/nikodwicahyo/CodingCamp-21Sep26-NikoDwicahyo
+🌐 **Live Demo:** [nikodwicahyo.github.io/CodingCamp-21Sep26-NikoDwicahyo](https://nikodwicahyo.github.io/CodingCamp-21Sep26-NikoDwicahyo)
 
 ---
 
